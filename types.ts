@@ -1,6 +1,6 @@
 // cityBlock	height	notes	topologicalFloodRisk	spongacity	criticalInfrastructure	historicFloodProbability	drainageIn	drainageOut	publicTransportPresence	electricityInfrastructureResiliency
 
-type Scenario = {
+export type Scenario = {
   /** E.g.: "Soggystadt - Heavy rainfall" */
   name: string;
 
@@ -8,19 +8,17 @@ type Scenario = {
   floodType: Flood;
 
   /** list of properties that affect the difficulty of the scenario */
-  properties: ScenarioCondition[];
+  conditions: ScenarioCondition[];
 
-  cityBlocks: CityBlock[][];
+  cityBlocks: CityBlock[];
 }
 
-type Flood = {
-  /** kl/m */
+export type Flood = {
+  /** kl/m, similar to drainage flow between city blocks */
   precipitation: number;
-  /** Days */
-  duration: number;
 }
 
-type ScenarioCondition = {
+export type ScenarioCondition = {
   /** E.g. hurricane, freezing weather */
   name: string;
   
@@ -28,16 +26,19 @@ type ScenarioCondition = {
   priorityInfluence: Priorities;
 }
 
-type Priorities = {
+export type Priorities = {
   life: number;
-  injury: number;
+  /* damage to property (buildings, cars, etc.) */
   property: number;
-  power: number;
+  /* damage to infrastructure (roads, bridges, tunnels, etc.) */
   infrastructure: number;
+  /* damage to power infrastructure (power plants, power lines, etc.) */
+  power: number;
+  /* damage to communication infrastructure (fibre optic cables, cell towers, etc.) */
   communication: number;
 }
 
-type CityBlock = {
+export type CityBlock = {
   name: string;
   height: number;
   population: number;
@@ -52,7 +53,7 @@ type CityBlock = {
   priorities: Priorities;
 
   /** Liters per hour in each direction */
-  drainageFlowCapacity: number[][];
+  drainageFlowCapacity: number[];
   /** Max. capacity until a flood occurs */
   drainageStorageCapacity: number;
 
@@ -61,9 +62,9 @@ type CityBlock = {
 
 // The result of the simulation is a list of mitigations that are the best fit to the city
 // given the current scenario and desired parameters to optimize for (loss of life, property damage, etc.)
-type Result = {
+export type Result = {
   /** A list of mitigations per city block **/
-  mitigations: Array<Mitigation>[][];
+  mitigations: Array<Mitigation>[];
 
   // estimates: 
   /** Prevented flood impacts */
@@ -71,11 +72,11 @@ type Result = {
 }
 
 
-type Mitigation = {
+export type Mitigation = {
   name: string;
   steps: MitigationStep[];
   
-  /** Cost in $ per year */
+  /** Cost in $ per year for an average city block */
   maintananceCost: number;
 
   // TODO: should be a computed property based on steps
@@ -85,49 +86,15 @@ type Mitigation = {
   totalFinancialCost(): number;
 };
 
-type MitigationStep = {
+export type MitigationStep = {
   name: string;
   financialCost: number;
   timeCost: number;
-  stakeholders: Stakeholder[];
+  stakeholders: string[];
 }
 
-type Stakeholder = {
+export type Stakeholder = {
   budget: number;
   mitigationPreferences: string[];
   priorityPreferences: Priorities;
-}
-
-class Simulation {
-  cityBlocks: CityBlock[][];
-
-  constructor(scenario: Scenario) {
-    this.cityBlocks = scenario.cityBlocks;
-  }
-
-  recommendMitigations() {
-    // Highest effectiveness compared to cost
-    // Fastest to install, cheapest to maintain
-    // Aligns the best with the desired priorities
-
-    // Return for each city block which mitigations suit the best
-    
-  }
-
-  step() {
-    for (let i = 0; i < this.cityBlocks.length; i++) {
-      for (let j = 0; j < this.cityBlocks[i].length; j++) {
-
-        // Keep track of state:
-        // - rain falling down, being absorbed/captured 
-        // - if over capacity, flows into neighbouring cityblocks
-        // - water in capacity slowly drains out as well (say 1/3 of remaining stored water)
-
-
-        // Simulate damage
-
-
-      }
-    }
-  }
 }

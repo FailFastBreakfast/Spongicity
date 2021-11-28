@@ -1,0 +1,11 @@
+{
+  "name": "Spongicity",
+  "version": "1.0.0",
+  "main": "main.ts",
+  "repository": "git@github.com:FailFastBreakfast/Spongicity.git",
+  "author": "Remi van der Laan <rrm-remi@hotmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^4.5.2"
+  }
+}
